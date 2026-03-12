@@ -7,7 +7,9 @@ Interface web pour naviguer dans des catalogues STAC hébergés sur S3.
 ### 1. Prérequis système
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y git nodejs npm apache2
+sudo apt install -y git npm apache2
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
 ```
 
 ### 2. Cloner le projet

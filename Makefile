@@ -20,7 +20,7 @@ help: ## Affiche cette aide
 install: ## Clone et installe STAC Browser
 	@echo "$(GREEN)Installation de STAC Browser...$(NC)"
 	sudo git clone https://github.com/radiantearth/stac-browser $(STAC_BROWSER_DIR) || true
-	cd $(STAC_BROWSER_DIR) && npm install
+	sudo npm install --prefix $(STAC_BROWSER_DIR)
 	@echo "$(GREEN)✓ Installation terminée$(NC)"
 
 validate: ## Vérifie que le catalogue STAC racine est accessible
@@ -31,6 +31,7 @@ validate: ## Vérifie que le catalogue STAC racine est accessible
 build: ## Build STAC Browser avec la config
 	@echo "$(GREEN)Build de STAC Browser...$(NC)"
 	cd $(STAC_BROWSER_DIR) && \
+	sudo -E env \
 	STAC_APP_NAME="$(STAC_APP_NAME)" \
 	STAC_CATALOG_URL="$(STAC_CATALOG_URL)" \
 	npm run build
