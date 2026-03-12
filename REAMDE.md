@@ -18,8 +18,8 @@ cd /opt/catalog-riverly-data-lake
 
 ### 3. Configuration
 ```bash
-cp dist.env .env
-nano .env
+sudo cp dist.env .env
+sudo nano .env
 ```
 
 Remplir les variables :

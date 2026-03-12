@@ -19,8 +19,7 @@ help: ## Affiche cette aide
 
 install: ## Clone et installe STAC Browser
 	@echo "$(GREEN)Installation de STAC Browser...$(NC)"
-	sudo apt install -y nodejs npm apache2
-	git clone https://github.com/radiantearth/stac-browser $(STAC_BROWSER_DIR) || true
+	sudo git clone https://github.com/radiantearth/stac-browser $(STAC_BROWSER_DIR) || true
 	cd $(STAC_BROWSER_DIR) && npm install
 	@echo "$(GREEN)✓ Installation terminée$(NC)"
 
