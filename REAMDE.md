@@ -1,56 +1,86 @@
 # STAC Browser Service
 
-Service d'interface web pour naviguer dans des catalogues STAC hébergés sur S3.
-
-## Prérequis
-- Node.js 20+
-- Apache2
-- Un nom de domaine pointant vers ce serveur
+Interface web pour naviguer dans des catalogues STAC hébergés sur S3.
 
 ## Installation
 
-### 1. Configuration
+### 1. Prérequis système
 ```bash
-cp .env.dist .env
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y git nodejs npm apache2
+```
+
+### 2. Cloner le projet
+```bash
+sudo git clone https://github.com/louis-heraut/catalog-riverly-data-lake /opt/catalog-riverly-data-lake
+cd /opt/catalog-riverly-data-lake
+```
+
+### 3. Configuration
+```bash
+cp dist.env .env
 nano .env
 ```
 
-Remplir :
+Remplir les variables :
 ```bash
-STAC_APP_NAME=STAC Browser
-STAC_CATALOG_URL=https://.../.../catalog.json
-DOMAIN=stac.example.domain.fr
+STAC_APP_NAME=Catalogue - RiverLy Data Lake
+STAC_CATALOG_URL=https://s3-data.meso.umontpellier.fr/.../catalog.json
+DOMAIN=catalog.riverly-data-lake.inrae.fr
 APACHE_SERVE_DIR=/var/www/stac-browser
 ```
 
-### 2. Installation et déploiement
+### 4. Installation et déploiement
 ```bash
-make install   # Clone STAC Browser + installe Apache
-make deploy    # Build + déploie sur Apache
+make install   # Installe Node.js, Apache et clone STAC Browser
+make deploy    # Build et déploie sur Apache
 ```
 
-### 3. HTTPS (recommandé)
+### 5. HTTPS (recommandé)
 ```bash
 sudo apt install certbot python3-certbot-apache
-sudo certbot --apache -d stac.example.inrae.fr
+sudo certbot --apache -d catalog.riverly-data-lake.inrae.fr
 ```
 
-## Mise à jour du catalogue
+## Mise à jour
+
+### Mise à jour du catalogue
+
 Le catalogue STAC est lu en temps réel depuis le S3 — aucune action nécessaire quand les données changent.
 
-Pour mettre à jour STAC Browser lui-même :
+### Mise à jour de STAC Browser
 ```bash
-cd stac-browser && git pull && cd ..
-make deploy
+make update
 ```
 
-## Commandes
+## Commandes disponibles
 ```bash
-make install   # Installation initiale
-make deploy    # Valide, build et déploie
-make update    # Met à jour le service
-make restart   # Redémarre Apache
-make status    # Statut Apache
-make logs      # Logs en temps réel
-make uninstall # Désinstalle le service
+make install    # Installation initiale (Node.js, Apache, STAC Browser)
+make deploy     # Build et déploie sur Apache
+make update     # Met à jour STAC Browser et redéploie
+make restart    # Redémarre Apache
+make status     # Statut Apache
+make logs       # Logs Apache en temps réel
+make uninstall  # Désinstalle le service
+```
+
+## Architecture
+
+Ce service est une interface de navigation uniquement — il ne stocke aucune donnée.
+Le catalogue STAC et les données sont hébergés sur S3 :
+```
+bucket: data-lake
+├── stac-data/
+│   ├── catalog.json          ← STAC_CATALOG_URL pointe ici
+│   ├── safran/
+│   │   ├── collection.json
+│   │   └── items/
+│   │       ├── item-01.json  ← référence l'URL S3 de la donnée
+│   │       └── ...
+│   └── arome/
+│       ├── collection.json
+│       └── items/
+└── data/                     ← fichiers NetCDF, générés par le pipeline
+    ├── safran/
+    └── arome/
 ```
