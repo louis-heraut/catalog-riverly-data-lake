@@ -21,14 +21,14 @@ help: ## Affiche cette aide
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(YELLOW)%-15s$(NC) %s\n", $$1, $$2}'
 
-install: ## Clone et installe STAC Browser + virtualenv Python + configure Apache
+install:
 	@echo "$(GREEN)Installation de STAC Browser...$(NC)"
 	sudo git clone https://github.com/radiantearth/stac-browser $(STAC_BROWSER_DIR) || true
 	cd $(STAC_BROWSER_DIR) && sudo npm install
 	@echo "$(GREEN)Installation du virtualenv Python...$(NC)"
-	$(PYTHON) -m venv $(VENV)
-	$(PIP) install --upgrade pip
-	$(PIP) install -r requirements.txt
+	sudo $(PYTHON) -m venv $(VENV)
+	sudo $(PIP) install --upgrade pip
+	sudo $(PIP) install -r requirements.txt
 	$(MAKE) configure-apache
 	@echo "$(GREEN)✓ Installation terminée$(NC)"
 
