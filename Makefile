@@ -1,4 +1,4 @@
-.PHONY: help install build deploy configure-apache restart status logs uninstall update publish-catalog validate
+.PHONY: help install build deploy configure-apache restart status logs uninstall update update-browser publish-catalog validate
 
 # Variables
 STAC_BROWSER_DIR := stac-browser
@@ -81,12 +81,19 @@ deploy: validate build ## Vérifie, build et déploie les fichiers
 	sudo systemctl reload apache2
 	@echo "$(GREEN)✓ Déployé sur http://$(DOMAIN)$(NC)"
 
-update: ## Met à jour STAC Browser (git pull + npm install + redéploiement)
+
+update: ## Met à jour le projet (Makefile, catalog.json, config)
+	@echo "$(GREEN)Mise à jour du projet...$(NC)"
+	git pull
+	$(PIP) install --upgrade -r requirements.txt
+	@echo "$(GREEN)✓ Projet mis à jour$(NC)"
+
+update-browser: ## Met à jour STAC Browser et redéploie
 	@echo "$(GREEN)Mise à jour de STAC Browser...$(NC)"
 	cd $(STAC_BROWSER_DIR) && git pull
 	cd $(STAC_BROWSER_DIR) && npm install
-	$(PIP) install --upgrade -r requirements.txt
 	$(MAKE) deploy
+	@echo "$(GREEN)✓ STAC Browser mis à jour et redéployé$(NC)"
 
 restart: ## Redémarre Apache
 	sudo systemctl restart apache2

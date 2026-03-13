@@ -51,12 +51,21 @@ sudo certbot --apache -d catalog.data-lake.domain.fr
 ## Mise à jour
 
 ### Mise à jour du catalogue
-
 Le catalogue STAC est lu en temps réel depuis le S3 — aucune action nécessaire quand les données changent.
+
+Si le fichier `catalog.json` racine est modifié :
+```bash
+make publish-catalog
+```
+
+### Mise à jour du projet (Makefile, config, catalog.json)
+```bash
+make update
+```
 
 ### Mise à jour de STAC Browser
 ```bash
-make update
+make update-browser
 ```
 
 ## Commandes disponibles
@@ -65,7 +74,8 @@ make install           # Installation initiale (Node.js, Apache, STAC Browser)
 make validate          # Vérifie que le catalogue S3 est accessible
 make configure-apache  # Reconfigure le vhost Apache
 make deploy            # Build et déploie sur Apache
-make update            # Met à jour STAC Browser et redéploie
+make update            # Met à jour le projet (Makefile, config, catalog.json)
+make update-browser    # Met à jour STAC Browser et redéploie
 make restart           # Redémarre Apache
 make status            # Statut Apache
 make logs              # Logs Apache en temps réel
