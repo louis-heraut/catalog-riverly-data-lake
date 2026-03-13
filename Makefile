@@ -21,14 +21,14 @@ help: ## Affiche cette aide
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(YELLOW)%-15s$(NC) %s\n", $$1, $$2}'
 
-install:
+install: ## Clone et installe STAC Browser + virtualenv Python + configure Apache
 	@echo "$(GREEN)Installation de STAC Browser...$(NC)"
-	sudo git clone https://github.com/radiantearth/stac-browser $(STAC_BROWSER_DIR) || true
-	cd $(STAC_BROWSER_DIR) && sudo npm install
+	git clone https://github.com/radiantearth/stac-browser $(STAC_BROWSER_DIR) || true
+	cd $(STAC_BROWSER_DIR) && npm install
 	@echo "$(GREEN)Installation du virtualenv Python...$(NC)"
-	sudo $(PYTHON) -m venv $(VENV)
-	sudo $(PIP) install --upgrade pip
-	sudo $(PIP) install -r requirements.txt
+	$(PYTHON) -m venv $(VENV)
+	$(PIP) install --upgrade pip
+	$(PIP) install -r requirements.txt
 	$(MAKE) configure-apache
 	@echo "$(GREEN)✓ Installation terminée$(NC)"
 
@@ -59,10 +59,20 @@ validate: ## Vérifie que le catalogue STAC racine est accessible
 build: ## Build STAC Browser avec la config
 	@echo "$(GREEN)Build de STAC Browser...$(NC)"
 	cd $(STAC_BROWSER_DIR) && \
-	npm run build -- \
-		--catalogUrl="$(STAC_CATALOG_URL)" \
-		--appName="$(STAC_APP_NAME)"
+	STAC_APP_NAME="$(STAC_APP_NAME)" \
+	STAC_CATALOG_URL="$(STAC_CATALOG_URL)" \
+	npm run build
 	@echo "$(GREEN)✓ Build terminé$(NC)"
+
+
+# build: ## Build STAC Browser avec la config
+# 	@echo "$(GREEN)Build de STAC Browser...$(NC)"
+# 	cd $(STAC_BROWSER_DIR) && \
+# 	npm run build -- \
+# 		--catalogUrl="$(STAC_CATALOG_URL)" \
+# 		--appName="$(STAC_APP_NAME)"
+# 	@echo "$(GREEN)✓ Build terminé$(NC)"
+
 
 deploy: validate build ## Vérifie, build et déploie les fichiers
 	@echo "$(GREEN)Déploiement sur Apache...$(NC)"
@@ -73,8 +83,8 @@ deploy: validate build ## Vérifie, build et déploie les fichiers
 
 update: ## Met à jour STAC Browser (git pull + npm install + redéploiement)
 	@echo "$(GREEN)Mise à jour de STAC Browser...$(NC)"
-	cd $(STAC_BROWSER_DIR) && sudo git pull
-	cd $(STAC_BROWSER_DIR) && sudo npm install
+	cd $(STAC_BROWSER_DIR) && git pull
+	cd $(STAC_BROWSER_DIR) && npm install
 	$(PIP) install --upgrade -r requirements.txt
 	$(MAKE) deploy
 
