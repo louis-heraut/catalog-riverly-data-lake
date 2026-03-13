@@ -6,8 +6,7 @@ Interface web pour naviguer dans des catalogues STAC hébergés sur S3.
 
 ### 1. Prérequis système
 ```bash
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y git npm apache2
+sudo apt install -y git apache2 python3 python3-venv
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
@@ -26,10 +25,14 @@ sudo nano .env
 
 Remplir les variables :
 ```bash
-STAC_APP_NAME=Catalogue - RiverLy Data Lake
-STAC_CATALOG_URL=https://s3-data.meso.umontpellier.fr/.../catalog.json
-DOMAIN=catalog.riverly-data-lake.inrae.fr
+STAC_APP_NAME=STAC Browser
+STAC_CATALOG_URL=https://s3-data.domain.fr/s3-bucket/stac-data/catalog.json
+DOMAIN=catalog.data-lake.domain.fr
 APACHE_SERVE_DIR=/var/www/stac-browser
+S3_ENDPOINT=https://s3-data.domain.fr
+S3_BUCKET=s3-bucket
+S3_ACCESS_KEY=xxx
+S3_SECRET_KEY=xxx
 ```
 
 ### 4. Installation et déploiement
@@ -57,13 +60,16 @@ make update
 
 ## Commandes disponibles
 ```bash
-make install    # Installation initiale (Node.js, Apache, STAC Browser)
-make deploy     # Build et déploie sur Apache
-make update     # Met à jour STAC Browser et redéploie
-make restart    # Redémarre Apache
-make status     # Statut Apache
-make logs       # Logs Apache en temps réel
-make uninstall  # Désinstalle le service
+make install           # Installation initiale (Node.js, Apache, STAC Browser)
+make validate          # Vérifie que le catalogue S3 est accessible
+make configure-apache  # Reconfigure le vhost Apache
+make deploy            # Build et déploie sur Apache
+make update            # Met à jour STAC Browser et redéploie
+make restart           # Redémarre Apache
+make status            # Statut Apache
+make logs              # Logs Apache en temps réel
+make publish-catalog   # Upload le catalog.json racine sur S3
+make uninstall         # Désinstalle le service
 ```
 
 ## Architecture

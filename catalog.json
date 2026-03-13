@@ -1,0 +1,20 @@
+{
+  "type": "Catalog",
+  "id": "riverly-data-lake",
+  "stac_version": "1.0.0",
+  "title": "Catalogue RiverLy Data Lake",
+  "description": "Catalogue des données hydrologiques du Data Lake RiverLy.",
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://s3-data.meso.umontpellier.fr/riverly-data-lake/stac-data/catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "child",
+      "href": "https://s3-data.meso.umontpellier.fr/riverly-data-lake/stac-data/safran-fairy/collection.json",
+      "type": "application/json",
+      "title": "SAFRAN-Fairy"
+    }
+  ]
+} 
