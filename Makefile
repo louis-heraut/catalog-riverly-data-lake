@@ -59,7 +59,6 @@ validate: ## Vérifie que le catalogue STAC racine est accessible
 build: ## Build STAC Browser avec la config
 	@echo "$(GREEN)Build de STAC Browser...$(NC)"
 	cd $(STAC_BROWSER_DIR) && \
-	sudo -E env \
 	STAC_APP_NAME="$(STAC_APP_NAME)" \
 	STAC_CATALOG_URL="$(STAC_CATALOG_URL)" \
 	npm run build

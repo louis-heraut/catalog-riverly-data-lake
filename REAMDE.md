@@ -6,6 +6,7 @@ Interface web pour naviguer dans des catalogues STAC hébergés sur S3.
 
 ### 1. Prérequis système
 ```bash
+sudo apt update && sudo apt upgrade -y
 sudo apt install -y git apache2 python3 python3-venv
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
@@ -14,13 +15,15 @@ sudo apt install -y nodejs
 ### 2. Cloner le projet
 ```bash
 sudo git clone https://github.com/louis-heraut/catalog-riverly-data-lake /opt/catalog-riverly-data-lake
+sudo chown -R $USER:$USER /opt/catalog-riverly-data-lake
 cd /opt/catalog-riverly-data-lake
 ```
 
 ### 3. Configuration
 ```bash
-sudo cp dist.env .env
-sudo nano .env
+cp dist.env .env
+nano .env
+chmod 600 .env
 ```
 
 Remplir les variables :
@@ -29,22 +32,20 @@ STAC_APP_NAME=STAC Browser
 STAC_CATALOG_URL=https://s3-data.domain.fr/s3-bucket/stac-data/catalog.json
 DOMAIN=catalog.data-lake.domain.fr
 APACHE_SERVE_DIR=/var/www/stac-browser
-S3_ENDPOINT=https://s3-data.domain.fr
-S3_BUCKET=s3-bucket
 S3_ACCESS_KEY=xxx
 S3_SECRET_KEY=xxx
 ```
 
 ### 4. Installation et déploiement
 ```bash
-make install   # Installe Node.js, Apache et clone STAC Browser
-make deploy    # Build et déploie sur Apache
+make install  # Clone STAC Browser, installe les dépendances, configure Apache
+make deploy   # Build et déploie sur Apache
 ```
 
 ### 5. HTTPS (recommandé)
 ```bash
 sudo apt install certbot python3-certbot-apache
-sudo certbot --apache -d catalog.riverly-data-lake.inrae.fr
+sudo certbot --apache -d catalog.data-lake.domain.fr
 ```
 
 ## Mise à jour
