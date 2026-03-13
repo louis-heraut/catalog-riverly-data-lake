@@ -23,12 +23,12 @@ help: ## Affiche cette aide
 
 install: ## Clone et installe STAC Browser + virtualenv Python + configure Apache
 	@echo "$(GREEN)Installation de STAC Browser...$(NC)"
-	sudo git clone https://github.com/radiantearth/stac-browser $(STAC_BROWSER_DIR) || true
-	cd $(STAC_BROWSER_DIR) && sudo npm install
+	git clone https://github.com/radiantearth/stac-browser $(STAC_BROWSER_DIR) || true
+	cd $(STAC_BROWSER_DIR) && npm install
 	@echo "$(GREEN)Installation du virtualenv Python...$(NC)"
-	sudo $(PYTHON) -m venv $(VENV)
-	sudo $(PIP) install --upgrade pip --root-user-action=ignore
-	sudo $(PIP) install -r requirements.txt --root-user-action=ignore
+	$(PYTHON) -m venv $(VENV)
+	$(PIP) install --upgrade pip
+	$(PIP) install -r requirements.txt
 	$(MAKE) configure-apache
 	@echo "$(GREEN)✓ Installation terminée$(NC)"
 
@@ -59,10 +59,11 @@ validate: ## Vérifie que le catalogue STAC racine est accessible
 build: ## Build STAC Browser avec la config
 	@echo "$(GREEN)Build de STAC Browser...$(NC)"
 	cd $(STAC_BROWSER_DIR) && \
-	STAC_APP_NAME="$(STAC_APP_NAME)" \
-	STAC_CATALOG_URL="$(STAC_CATALOG_URL)" \
-	sudo -E npm run build
+	SB_catalogUrl="$(STAC_CATALOG_URL)" \
+	SB_appName="$(STAC_APP_NAME)" \
+	npm run build
 	@echo "$(GREEN)✓ Build terminé$(NC)"
+
 
 deploy: validate build ## Vérifie, build et déploie les fichiers
 	@echo "$(GREEN)Déploiement sur Apache...$(NC)"
@@ -71,16 +72,17 @@ deploy: validate build ## Vérifie, build et déploie les fichiers
 	sudo systemctl reload apache2
 	@echo "$(GREEN)✓ Déployé sur http://$(DOMAIN)$(NC)"
 
+
 update: ## Met à jour le projet (Makefile, catalog.json, config)
 	@echo "$(GREEN)Mise à jour du projet...$(NC)"
-	sudo git pull
-	sudo $(PIP) install --upgrade -r requirements.txt --root-user-action=ignore
+	git pull
+	$(PIP) install --upgrade -r requirements.txt
 	@echo "$(GREEN)✓ Projet mis à jour$(NC)"
 
 update-browser: ## Met à jour STAC Browser et redéploie
 	@echo "$(GREEN)Mise à jour de STAC Browser...$(NC)"
-	cd $(STAC_BROWSER_DIR) && sudo git pull
-	cd $(STAC_BROWSER_DIR) && sudo npm install
+	cd $(STAC_BROWSER_DIR) && git pull
+	cd $(STAC_BROWSER_DIR) && npm install
 	$(MAKE) deploy
 	@echo "$(GREEN)✓ STAC Browser mis à jour et redéployé$(NC)"
 
@@ -95,7 +97,7 @@ logs: ## Logs Apache en temps réel
 
 publish-catalog: ## Upload le catalog.json racine sur S3
 	@echo "$(GREEN)Publication du catalogue racine...$(NC)"
-	sudo $(PYTHON_VENV) publish_catalog.py
+	$(PYTHON_VENV) publish_catalog.py
 	@echo "$(GREEN)✓ Catalogue publié$(NC)"
 
 uninstall: ## Désinstalle le service
