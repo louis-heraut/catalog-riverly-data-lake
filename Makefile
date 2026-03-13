@@ -30,6 +30,7 @@ install: ## Clone et installe STAC Browser + virtualenv Python + configure Apach
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 	$(MAKE) configure-apache
+	sudo chown -R $(shell whoami):$(shell whoami) $(STAC_BROWSER_DIR)
 	@echo "$(GREEN)✓ Installation terminée$(NC)"
 
 configure-apache: ## Configure le vhost Apache (une seule fois)
