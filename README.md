@@ -15,7 +15,6 @@ sudo apt install -y nodejs
 ### 2. Cloner le projet
 ```bash
 sudo git clone https://github.com/louis-heraut/catalog-riverly-data-lake /opt/catalog-riverly-data-lake
-sudo chown -R $USER:$USER /opt/catalog-riverly-data-lake
 cd /opt/catalog-riverly-data-lake
 ```
 
