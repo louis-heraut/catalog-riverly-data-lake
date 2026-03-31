@@ -45,7 +45,7 @@ make deploy   # Build et déploie sur Apache
 ### 5. HTTPS (recommandé)
 ```bash
 sudo apt install certbot python3-certbot-apache
-sudo certbot --apache -d catalog.data-lake.domain.fr
+sudo certbot --apache
 ```
 
 ## Mise à jour
